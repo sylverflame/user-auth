@@ -14,6 +14,8 @@ export enum ErrorCodes {
   ERR_002 = "Missing required fields: id, name, or role",
   ERR_003 = "Invalid role",
   ERR_004 = "No user found",
+  ERR_005 = "Sorry can't find that!",
+  ERR_006 = "Something broke!",
 }
 
 export enum SuccessCodes {
