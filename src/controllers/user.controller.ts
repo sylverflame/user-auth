@@ -6,7 +6,6 @@ import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 
 const userManagerMap = new UserManagerMap();
-const passwordManager = new UserManagerMap();
 
 // -- Create
 export const createUser = (req: any, res: any) => {
@@ -18,14 +17,14 @@ export const createUser = (req: any, res: any) => {
 
     // Parse user data
     const userBody = UserSchema.parse(req.body);
-    const { firstName, lastName, role } = userBody;
+    const { firstName, lastName, role, username, password } = userBody;
 
     // Generate ID
     const totalUsers = userManagerMap.getSize();
     const id = totalUsers + 1;
 
     // Create user
-    const user = new User(id, firstName, lastName, role as Role);
+    const user = new User(id, firstName, lastName, role, username, password);
     userManagerMap.addUser(user);
 
     res

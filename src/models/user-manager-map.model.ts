@@ -1,4 +1,5 @@
 import { ROLES } from "../configs/constants";
+import { UserResponse } from "../schemas/user.schema";
 import { User } from "./user.model";
 
 export class UserManagerMap {
@@ -13,27 +14,27 @@ export class UserManagerMap {
     this.users.set(id, user);
   }
 
-  getUser(id: number): User | null {
+  getUser(id: number): UserResponse | null {
     const user = this.users.get(id);
     if (!user) {
       return null;
     }
-    return user;
+    return user.getUserData();
   }
 
-  getAllUsers(): User[] {
-    return [...this.users.values()];
+  getAllUsers(): UserResponse[] {
+    return [...this.users.values()].map((user) => user.getUserData());
   }
-  getAdmins(): User[] {
-    return [...this.users.values()].filter(
-      (user) => user.getRole() === ROLES.Admin
-    );
+  getAdmins(): UserResponse[] {
+    return [...this.users.values()]
+      .filter((user) => user.getRole() === ROLES.Admin)
+      .map((user) => user.getUserData());
   }
 
-  getEmployees(): User[] {
-    return [...this.users.values()].filter(
-      (user) => user.getRole() === ROLES.Employee
-    );
+  getEmployees(): UserResponse[] {
+    return [...this.users.values()]
+      .filter((user) => user.getRole() === ROLES.Employee)
+      .map((user) => user.getUserData());
   }
 
   removeUser(id: number): boolean {
