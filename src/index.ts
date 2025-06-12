@@ -1,6 +1,6 @@
 import express, { json } from "express";
 import cors from "cors";
-import userRouter from "./routes/userRoutes";
+import userRouter from "./routes/user.route";
 import helmet from "helmet";
 import { ErrorCodes, Status } from "./models/types";
 

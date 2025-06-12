@@ -1,6 +1,6 @@
 import { ROLES } from "../configs/constants";
-import { User } from "../models/User";
-import { UserManagerMap } from "../models/UserManagerMap";
+import { User } from "../models/user.model";
+import { UserManagerMap } from "../models/user-manager-map.model";
 import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 
 const userManagerMap = new UserManagerMap();

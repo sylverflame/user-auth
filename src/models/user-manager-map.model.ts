@@ -1,5 +1,5 @@
 import { ROLES } from "../configs/constants";
-import { User } from "./User";
+import { User } from "./user.model";
 
 export class UserManagerMap {
   private users: Map<number, User>;
