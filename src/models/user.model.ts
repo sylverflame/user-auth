@@ -1,22 +1,19 @@
 import { Role } from "./types";
 
-interface IUser {
-  getid(): number;
-  getFirstName(): string;
-}
-
-export class User implements IUser {
+export class User {
   private id: number;
   private firstName: string;
+  private lastName: string;
   private role: Role;
 
-  constructor(id: number, firstName: string, role: Role) {
+  constructor(id: number, firstName: string, lastName: string, role: Role) {
     this.id = id;
     this.firstName = firstName;
+    this.lastName = lastName;
     this.role = role;
   }
 
-  getid(): number {
+  getId(): number {
     return this.id;
   }
 
@@ -29,6 +26,6 @@ export class User implements IUser {
   }
 
   toString(): string {
-    return "ID: " + this.id + " Name: " + this.firstName;
+    return "ID: " + this.id + " Name: " + this.firstName + " " + this.lastName;
   }
 }

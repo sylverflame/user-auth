@@ -9,7 +9,7 @@ export class UserManagerMap {
   }
 
   addUser(user: User): void {
-    const id = user.getid();
+    const id = user.getId();
     this.users.set(id, user);
   }
 

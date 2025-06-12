@@ -12,7 +12,7 @@ export class UserManager {
     this.users.push(user);
   }
   getUser(id: number): User | null {
-    let index: number = this.users.findIndex((user) => user.getid() === id);
+    let index: number = this.users.findIndex((user) => user.getId() === id);
     if (index === -1) {
       return null;
     }
@@ -30,7 +30,7 @@ export class UserManager {
   }
 
   removeUser(id: number): boolean {
-    let index: number = this.users.findIndex((user) => user.getid() === id);
+    let index: number = this.users.findIndex((user) => user.getId() === id);
     if (index !== -1) {
       this.users.splice(index, 1);
       return true;
