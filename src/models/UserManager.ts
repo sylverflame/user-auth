@@ -1,7 +1,7 @@
 import { ROLES } from "../configs/constants";
-import { Role } from "./types";
 import { User } from "./User";
 
+// Not used - Retained for example
 export class UserManager {
   private users: User[];
   constructor() {

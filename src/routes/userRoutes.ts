@@ -1,15 +1,16 @@
-import { json, Router } from "express";
+import { Router } from "express";
 import {
   createUser,
+  deleteUser,
   getAllUsers,
   getUser,
 } from "../controllers/userController";
 
 const router = Router();
-router.use(json());
 
 router.get("/", getAllUsers);
 router.get("/:id", getUser);
 router.post("/", createUser);
+router.delete("/:id", deleteUser);
 
 export default router;

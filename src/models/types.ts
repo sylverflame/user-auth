@@ -20,4 +20,5 @@ export enum SuccessCodes {
   SUCCESS_001 = "User created successfully",
   SUCCESS_002 = "User retrieved",
   SUCCESS_003 = "User created successfully",
+  SUCCESS_004 = "User deleted successfully",
 }
