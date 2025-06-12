@@ -1,0 +1,44 @@
+import { ROLES } from "../configs/constants";
+import { Role } from "./types";
+import { User } from "./User";
+
+export class UserManager {
+  private users: User[];
+  constructor() {
+    this.users = [];
+  }
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+  getUser(id: number): User | null {
+    let index: number = this.users.findIndex((user) => user.getid() === id);
+    if (index === -1) {
+      return null;
+    }
+    return this.users[index];
+  }
+  getAllUsers(): User[] {
+    return [...this.users]; // return a copy to avoid mutation
+  }
+  getAdmins(): User[] {
+    return this.users.filter((user) => user.getRole() === ROLES.Admin);
+  }
+
+  getEmployees(): User[] {
+    return this.users.filter((user) => user.getRole() === ROLES.Employee);
+  }
+
+  removeUser(id: number): boolean {
+    let index: number = this.users.findIndex((user) => user.getid() === id);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  clearUsers(): void {
+    this.users = [];
+  }
+}
