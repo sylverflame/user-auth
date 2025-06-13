@@ -10,17 +10,18 @@ export enum Status {
 }
 
 export enum ErrorCodes {
-  ERR_001 = "No user payload received",
-  ERR_002 = "Missing required fields: id, name, or role",
-  ERR_003 = "Invalid role",
-  ERR_004 = "No user found",
-  ERR_005 = "Sorry can't find that!",
-  ERR_006 = "Something broke!",
+  ERR_001 = "ERR_001: No user payload received",
+  ERR_002 = "ERR_002: Missing required fields: id, name, or role",
+  ERR_003 = "ERR_003: Invalid role",
+  ERR_004 = "ERR_004: No user found",
+  ERR_005 = "ERR_005: Sorry can't find that!",
+  ERR_006 = "ERR_006: Something broke!",
+  ERR_007 = "ERR_007: Duplicate Username",
 }
 
 export enum SuccessCodes {
-  SUCCESS_001 = "User created successfully",
-  SUCCESS_002 = "User retrieved",
-  SUCCESS_003 = "User created successfully",
-  SUCCESS_004 = "User deleted successfully",
+  SUCCESS_001 = "SUCCESS_001: User created successfully",
+  SUCCESS_002 = "SUCCESS_002: User retrieved",
+  SUCCESS_003 = "SUCCESS_003: User created successfully",
+  SUCCESS_004 = "SUCCESS_004: User deleted successfully",
 }

@@ -6,8 +6,10 @@ import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
+import { UsernameIDMap } from "../models/user-id-map.model";
 
 const userManagerMap = new UserManagerMap();
+const usernameIDMap = new UsernameIDMap();
 
 // -- Create
 export const createUser = (req: Request, res: Response) => {
@@ -22,12 +24,19 @@ export const createUser = (req: Request, res: Response) => {
     const userBody = UserSchema.parse(req.body);
     const { firstName, lastName, role, username, password } = userBody;
 
+    // Check for duplicate username
+    if (usernameIDMap.getAllUsernames().includes(username)) {
+      res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_007 });
+      return;
+    }
+
     // Generate ID
     const id = uuidv4();
 
     // Create user
     const user = new User(id, firstName, lastName, role, username, password);
     userManagerMap.addUser(user);
+    usernameIDMap.addUser(id, username);
 
     res
       .status(Status.Created)
