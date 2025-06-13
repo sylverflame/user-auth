@@ -2,7 +2,7 @@ import { UserResponse } from "../schemas/user.schema";
 import { Role } from "./types";
 
 export class User {
-  private id: number;
+  private id: string;
   private firstName: string;
   private lastName: string;
   private role: Role;
@@ -10,7 +10,7 @@ export class User {
   private password: string;
 
   constructor(
-    id: number,
+    id: string,
     firstName: string,
     lastName: string,
     role: Role,
@@ -25,7 +25,7 @@ export class User {
     this.password = password;
   }
 
-  getId(): number {
+  getId(): string {
     return this.id;
   }
 

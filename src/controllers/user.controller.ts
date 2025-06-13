@@ -5,6 +5,7 @@ import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
 
 const userManagerMap = new UserManagerMap();
 
@@ -22,7 +23,7 @@ export const createUser = (req: Request, res: Response) => {
     const { firstName, lastName, role, username, password } = userBody;
 
     // Generate ID
-    const id = userManagerMap.getSize() + 1;
+    const id = uuidv4();
 
     // Create user
     const user = new User(id, firstName, lastName, role, username, password);
@@ -45,7 +46,7 @@ export const createUser = (req: Request, res: Response) => {
 export const getUser = (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const user = userManagerMap.getUser(Number(id));
+    const user = userManagerMap.getUser(id);
     if (!user) {
       // IMPORTANT - Add a return statement like below if there is response after this block as well
       res.status(Status.NotFound).json({ error: ErrorCodes.ERR_004 });
@@ -88,7 +89,7 @@ export const getAllUsers = (req: Request, res: Response) => {
 export const deleteUser = (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const isRemoved = userManagerMap.removeUser(Number(id));
+    const isRemoved = userManagerMap.removeUser(id);
 
     if (!isRemoved) {
       res.status(Status.NotFound).json({ error: ErrorCodes.ERR_004 });

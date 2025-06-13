@@ -3,7 +3,7 @@ import { UserResponse } from "../schemas/user.schema";
 import { User } from "./user.model";
 
 export class UserManagerMap {
-  private users: Map<number, User>;
+  private users: Map<string, User>;
 
   constructor() {
     this.users = new Map();
@@ -14,7 +14,7 @@ export class UserManagerMap {
     this.users.set(id, user);
   }
 
-  getUser(id: number): UserResponse | null {
+  getUser(id: string): UserResponse | null {
     const user = this.users.get(id);
     if (!user) {
       return null;
@@ -37,7 +37,7 @@ export class UserManagerMap {
       .map((user) => user.getUserData());
   }
 
-  removeUser(id: number): boolean {
+  removeUser(id: string): boolean {
     return this.users.delete(id);
   }
 

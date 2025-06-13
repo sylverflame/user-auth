@@ -9,7 +9,7 @@ export const UserSchema = z.object({
 });
 
 export const UserResponseSchema = z.object({
-  id: z.number(),
+  id: z.uuidv4(),
   firstName: z.string().min(5).max(10),
   lastName: z.string().min(5).max(10),
   role: z.literal(["Admin", "Employee"]),
