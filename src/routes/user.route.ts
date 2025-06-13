@@ -5,11 +5,12 @@ import {
   getAllUsers,
   getUser,
 } from "../controllers/user.controller";
+import { validateToken } from "../controllers/login.controller";
 
 const router = Router();
 
-router.get("/", getAllUsers);
-router.get("/:id", getUser);
+router.get("/", validateToken, getAllUsers);
+router.get("/:id", validateToken, getUser);
 router.post("/", createUser);
 router.delete("/:id", deleteUser);
 

@@ -17,6 +17,7 @@ export enum ErrorCodes {
   ERR_005 = "ERR_005: Sorry can't find that!",
   ERR_006 = "ERR_006: Something broke!",
   ERR_007 = "ERR_007: Duplicate Username",
+  ERR_008 = "ERR_008: Invalid JSON",
 }
 
 export enum SuccessCodes {

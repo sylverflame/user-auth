@@ -8,8 +8,8 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { UsernameIDMap } from "../models/user-id-map.model";
 
-const userManagerMap = new UserManagerMap();
-const usernameIDMap = new UsernameIDMap();
+export const userManagerMap = new UserManagerMap();
+export const usernameIDMap = new UsernameIDMap();
 
 // -- Create
 export const createUser = (req: Request, res: Response) => {
