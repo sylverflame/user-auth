@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorCodes, Status } from "../models/types";
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import { userManagerMap, usernameIDMap } from "./user.controller";
+import { userManagerMap } from "./user.controller";
 import { logger } from "../winston";
 import { authenticateUserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
@@ -21,9 +21,9 @@ export const authenticateUser = (
     const parsedBody = authenticateUserSchema.parse(req.body);
     const { username, password } = parsedBody;
 
-    const userId = usernameIDMap.getUserId(username);
+    const userId = userManagerMap.getUserByUsername(username)?.getId();
     const savedPassword = userId
-      ? userManagerMap.getUserPassword(userId)
+      ? userManagerMap.getUserById(userId)?.getPassword()
       : null;
 
     if (!userId || !savedPassword || savedPassword !== password) {
@@ -37,7 +37,7 @@ export const authenticateUser = (
       return;
     }
 
-    const userRole = userManagerMap.getUser(userId)?.getRole();
+    const userRole = userManagerMap.getUserById(userId)?.getRole();
 
     const token = jwt.sign({ name: username, role: userRole }, secretKey, {
       expiresIn: "30m",
@@ -73,11 +73,11 @@ export const validateToken = (
 
     const secretKey = process.env.JWT_SECRET_KEY;
     if (!secretKey) {
-      res.status(Status.InternalServerError).end();
-      return;
+      throw new Error(ErrorCodes.ERR_010);
     }
 
     const userData = jwt.verify(token, secretKey); //User data extracted from token - This also throws an error if there is as issue in the token
+    (req as any).user = userData; // Pass userdata to controller, For example to check role for authorization to data
     next();
   } catch (error: any) {
     if (

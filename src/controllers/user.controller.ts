@@ -5,11 +5,9 @@ import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
-import { UsernameIDMap } from "../models/user-id-map.model";
 import { logger } from "../winston";
 
 export const userManagerMap = new UserManagerMap();
-export const usernameIDMap = new UsernameIDMap();
 const userLogger = logger.child({ label: "UserController" });
 
 // -- Create
@@ -26,7 +24,7 @@ export const createUser = (req: Request, res: Response) => {
     const { firstName, lastName, role, username, password } = userBody;
 
     // Check for duplicate username
-    if (usernameIDMap.getAllUsernames().includes(username)) {
+    if (userManagerMap.getAllUsernames().includes(username)) {
       res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_007 });
       return;
     }
@@ -37,7 +35,6 @@ export const createUser = (req: Request, res: Response) => {
     // Create user
     const user = new User(id, firstName, lastName, role, username, password);
     userManagerMap.addUser(user);
-    usernameIDMap.addUser(id, username);
 
     res
       .status(Status.Created)
@@ -59,7 +56,7 @@ export const createUser = (req: Request, res: Response) => {
 export const getUser = (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const user = userManagerMap.getUser(id);
+    const user = userManagerMap.getUserById(id);
     if (!user) {
       // IMPORTANT - Add a return statement like below if there is response after this block as well
       res.status(Status.NotFound).json({ error: ErrorCodes.ERR_004 });
@@ -106,8 +103,14 @@ export const getAllUsers = (req: Request, res: Response) => {
 
 // -- Delete
 export const deleteUser = (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
+    const loggedInUserRole = (req as any).user.role;
+
+    if (!loggedInUserRole || loggedInUserRole !== "Admin") {
+      res.status(Status.Forbidden).end();
+      return;
+    }
+    const { id } = req.params;
     const isRemoved = userManagerMap.removeUser(id);
 
     if (!isRemoved) {

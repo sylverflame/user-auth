@@ -19,6 +19,7 @@ export enum ErrorCodes {
   ERR_007 = "ERR_007: Duplicate Username",
   ERR_008 = "ERR_008: Invalid JSON",
   ERR_009 = "ERR_009: Invalid Credentials",
+  ERR_010 = "ERR_010: JWT Secret key not set",
 }
 
 export enum SuccessCodes {
