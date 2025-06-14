@@ -38,7 +38,7 @@ export const authenticateUser = (
     }
 
     const token = jwt.sign({ name: username, role: "Admin" }, secretKey, {
-      expiresIn: "1m",
+      expiresIn: "30m",
     });
     // Typecast it to any to append token to request
     (req as any).token = token;
@@ -95,7 +95,8 @@ export const validateToken = (
 export const loginUser = (req: Request, res: Response, next: any) => {
   try {
     const jwt = (req as any).token;
-    res.json({ message: "Login Successful", jwt });
+    res.status(Status.Success).json({ message: "Login Successful", jwt });
+    return;
   } catch (error: any) {
     loginLogger.error(`loginUser failed - ${error.message}`, {
       stack: error.stack,
