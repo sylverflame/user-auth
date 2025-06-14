@@ -14,12 +14,12 @@ export class UserManagerMap {
     this.users.set(id, user);
   }
 
-  getUser(id: string): UserResponse | null {
+  getUser(id: string): User | null {
     const user = this.users.get(id);
     if (!user) {
       return null;
     }
-    return user.getUserData();
+    return user;
   }
 
   getUserPassword(id: string): string | undefined {

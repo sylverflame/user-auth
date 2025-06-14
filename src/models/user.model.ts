@@ -46,6 +46,10 @@ export class User {
     return this.role;
   }
 
+  getUsername(): string {
+    return this.username;
+  }
+
   getPassword(): string {
     return this.password;
   }

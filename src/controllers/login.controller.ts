@@ -26,7 +26,7 @@ export const authenticateUser = (
       ? userManagerMap.getUserPassword(userId)
       : null;
 
-    if (!savedPassword || savedPassword !== password) {
+    if (!userId || !savedPassword || savedPassword !== password) {
       res.status(Status.Unauthorized).json({ error: ErrorCodes.ERR_009 });
       return;
     }
@@ -37,7 +37,9 @@ export const authenticateUser = (
       return;
     }
 
-    const token = jwt.sign({ name: username, role: "Admin" }, secretKey, {
+    const userRole = userManagerMap.getUser(userId)?.getRole();
+
+    const token = jwt.sign({ name: username, role: userRole }, secretKey, {
       expiresIn: "30m",
     });
     // Typecast it to any to append token to request
@@ -92,7 +94,7 @@ export const validateToken = (
   }
 };
 
-export const loginUser = (req: Request, res: Response, next: any) => {
+export const loginUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     const jwt = (req as any).token;
     res.status(Status.Success).json({ message: "Login Successful", jwt });

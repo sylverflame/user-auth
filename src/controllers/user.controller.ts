@@ -67,7 +67,7 @@ export const getUser = (req: Request, res: Response) => {
     }
     res
       .status(Status.Success)
-      .json({ message: SuccessCodes.SUCCESS_002, user });
+      .json({ message: SuccessCodes.SUCCESS_002, user: user.getUserData() });
   } catch (e: any) {
     userLogger.error(`getUser failed - ${e.message}`, {
       stack: e.stack,
