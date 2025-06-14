@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ErrorCodes, Status } from "../models/types";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { userManagerMap, usernameIDMap } from "./user.controller";
+import { logger } from "../winston";
+
+const loginLogger = logger.child({ label: "LoginController" });
 
 export const authenticateUser = (
   req: Request,
@@ -35,6 +38,7 @@ export const authenticateUser = (
 
     next();
   } catch (error: any) {
+    loginLogger.error(`authenticateUser failed - ${error.message}`);
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
@@ -58,20 +62,24 @@ export const validateToken = (
       return;
     }
 
-    const userData = jwt.verify(token, secretKey); //User data extracted from token
+    const userData = jwt.verify(token, secretKey); //User data extracted from token - This also throws an error if there is as issue in the token
     next();
   } catch (error: any) {
     if (error instanceof TokenExpiredError) {
       res.status(Status.Forbidden).json({ error: error.message });
       return;
     }
-    res
-      .status(Status.InternalServerError)
-      .json({ error: ErrorCodes.ERR_006, message: error.message });
+    loginLogger.error(`validateToken failed - ${error.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
 
 export const loginUser = (req: Request, res: Response, next: any) => {
-  const jwt = (req as any).token;
-  res.json({ message: "Login Successful", jwt });
+  try {
+    const jwt = (req as any).token;
+    res.json({ message: "Login Successful", jwt });
+  } catch (error: any) {
+    loginLogger.error(`validateToken failed - ${error.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
+  }
 };

@@ -6,9 +6,11 @@ import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
 import { UsernameIDMap } from "../models/user-id-map.model";
+import { logger } from "../winston";
 
 export const userManagerMap = new UserManagerMap();
 export const usernameIDMap = new UsernameIDMap();
+const userLogger = logger.child({ label: "UserController" });
 
 // -- Create
 export const createUser = (req: Request, res: Response) => {
@@ -46,7 +48,8 @@ export const createUser = (req: Request, res: Response) => {
       res.status(Status.BadRequest).json({ error: issues });
       return;
     }
-    res.status(Status.InternalServerError).json({ error: e.message });
+    userLogger.error(`createUser failed - ${e.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
 
@@ -64,7 +67,8 @@ export const getUser = (req: Request, res: Response) => {
       .status(Status.Success)
       .json({ message: SuccessCodes.SUCCESS_002, user });
   } catch (e: any) {
-    res.status(Status.InternalServerError).json({ error: e.message });
+    userLogger.error(`getUser failed - ${e.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
 
@@ -82,12 +86,12 @@ export const getAllUsers = (req: Request, res: Response) => {
         res.status(Status.Success).json({ message: "Employee List", users });
         break;
       default:
-        users = userManagerMap.getAllUsers();
-        res.status(Status.Success).json({ message: "All Users", users });
+        throw new Error("Invalid input");
         break;
     }
   } catch (e: any) {
-    res.status(Status.InternalServerError).json({ error: e.message });
+    userLogger.error(`getAllUsers failed - ${e.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
 
@@ -105,6 +109,7 @@ export const deleteUser = (req: Request, res: Response) => {
     }
     res.status(Status.Success).json({ message: SuccessCodes.SUCCESS_004 });
   } catch (e: any) {
-    res.status(Status.InternalServerError).json({ error: e.message });
+    userLogger.error(`deleteUser failed - ${e.message}`);
+    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
