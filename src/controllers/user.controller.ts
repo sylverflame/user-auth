@@ -86,7 +86,8 @@ export const getAllUsers = (req: Request, res: Response) => {
         res.status(Status.Success).json({ message: "Employee List", users });
         break;
       default:
-        throw new Error("Invalid input");
+        users = userManagerMap.getAllUsers();
+        res.status(Status.Success).json({ message: "All Users", users });
         break;
     }
   } catch (e: any) {
