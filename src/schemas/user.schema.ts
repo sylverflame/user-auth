@@ -15,5 +15,10 @@ export const UserResponseSchema = z.object({
   role: z.literal(["Admin", "Employee"]),
 });
 
+export const authenticateUserSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+
 export type User = z.infer<typeof UserSchema>;
 export type UserResponse = z.infer<typeof UserResponseSchema>;

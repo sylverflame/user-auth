@@ -22,7 +22,7 @@ export const createUser = (req: Request, res: Response) => {
     }
 
     // Parse user data
-    const userBody = UserSchema.parse(req.body);
+    const userBody = UserSchema.parse(req.body); // Zod throws an error, if any
     const { firstName, lastName, role, username, password } = userBody;
 
     // Check for duplicate username

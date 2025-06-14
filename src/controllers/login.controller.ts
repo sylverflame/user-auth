@@ -3,6 +3,8 @@ import { ErrorCodes, Status } from "../models/types";
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { userManagerMap, usernameIDMap } from "./user.controller";
 import { logger } from "../winston";
+import { authenticateUserSchema } from "../schemas/user.schema";
+import { ZodError } from "zod/v4";
 
 const loginLogger = logger.child({ label: "LoginController" });
 
@@ -12,7 +14,12 @@ export const authenticateUser = (
   next: NextFunction
 ) => {
   try {
-    const { username, password } = req.body;
+    if (!req.body) {
+      res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_009 });
+    }
+
+    const parsedBody = authenticateUserSchema.parse(req.body);
+    const { username, password } = parsedBody;
 
     const userId = usernameIDMap.getUserId(username);
     const savedPassword = userId
@@ -38,6 +45,10 @@ export const authenticateUser = (
 
     next();
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_009 });
+      return;
+    }
     loginLogger.error(`authenticateUser failed - ${error.message}`, {
       stack: error.stack,
     });
