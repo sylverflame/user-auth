@@ -21,6 +21,9 @@ app.use(helmet());
 const verifyToken = () => {};
 
 // Routes
+app.get("/", (req: Request, res: Response) => {
+  res.status(Status.Success).end();
+});
 app.use("/api/user/", userRouter);
 app.use("/api/login/", loginRouter);
 
