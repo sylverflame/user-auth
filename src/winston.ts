@@ -7,7 +7,9 @@ export const logger = winston.createLogger({
     winston.format.printf(({ level, message, timestamp, label, stack }) => {
       return `${timestamp} [${
         label || "App"
-      }] ${level.toUpperCase()}: ${message} ${stack ? "\n" + stack : ""}`;
+      }] ${level.toUpperCase()}: ${message} ${
+        stack ? "\n" + (stack as string).split("\n")[0] : ""
+      }`;
     })
   ),
   defaultMeta: { service: "user-service" },

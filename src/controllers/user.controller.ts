@@ -48,7 +48,9 @@ export const createUser = (req: Request, res: Response) => {
       res.status(Status.BadRequest).json({ error: issues });
       return;
     }
-    userLogger.error(`createUser failed - ${e.message}`);
+    userLogger.error(`createUser failed - ${e.message}`, {
+      stack: e.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
@@ -67,7 +69,9 @@ export const getUser = (req: Request, res: Response) => {
       .status(Status.Success)
       .json({ message: SuccessCodes.SUCCESS_002, user });
   } catch (e: any) {
-    userLogger.error(`getUser failed - ${e.message}`);
+    userLogger.error(`getUser failed - ${e.message}`, {
+      stack: e.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
@@ -91,7 +95,9 @@ export const getAllUsers = (req: Request, res: Response) => {
         break;
     }
   } catch (e: any) {
-    userLogger.error(`getAllUsers failed - ${e.message}`);
+    userLogger.error(`getAllUsers failed - ${e.message}`, {
+      stack: e.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
@@ -110,7 +116,9 @@ export const deleteUser = (req: Request, res: Response) => {
     }
     res.status(Status.Success).json({ message: SuccessCodes.SUCCESS_004 });
   } catch (e: any) {
-    userLogger.error(`deleteUser failed - ${e.message}`);
+    userLogger.error(`deleteUser failed - ${e.message}`, {
+      stack: e.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };

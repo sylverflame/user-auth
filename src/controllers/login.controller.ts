@@ -38,7 +38,9 @@ export const authenticateUser = (
 
     next();
   } catch (error: any) {
-    loginLogger.error(`authenticateUser failed - ${error.message}`);
+    loginLogger.error(`authenticateUser failed - ${error.message}`, {
+      stack: error.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
@@ -84,7 +86,9 @@ export const loginUser = (req: Request, res: Response, next: any) => {
     const jwt = (req as any).token;
     res.json({ message: "Login Successful", jwt });
   } catch (error: any) {
-    loginLogger.error(`validateToken failed - ${error.message}`);
+    loginLogger.error(`loginUser failed - ${error.message}`, {
+      stack: error.stack,
+    });
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
