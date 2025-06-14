@@ -5,7 +5,6 @@ import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 import { UserSchema } from "../schemas/user.schema";
 import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
 import { UsernameIDMap } from "../models/user-id-map.model";
 
 export const userManagerMap = new UserManagerMap();
@@ -31,7 +30,7 @@ export const createUser = (req: Request, res: Response) => {
     }
 
     // Generate ID
-    const id = uuidv4();
+    const id = crypto.randomUUID() as string;
 
     // Create user
     const user = new User(id, firstName, lastName, role, username, password);

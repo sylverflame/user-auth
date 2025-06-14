@@ -60,12 +60,14 @@ export const validateToken = (
 
     const userData = jwt.verify(token, secretKey); //User data extracted from token
     next();
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof TokenExpiredError) {
       res.status(Status.Forbidden).json({ error: error.message });
       return;
     }
-    res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
+    res
+      .status(Status.InternalServerError)
+      .json({ error: ErrorCodes.ERR_006, message: error.message });
   }
 };
 
