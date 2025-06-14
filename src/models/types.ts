@@ -18,6 +18,7 @@ export enum ErrorCodes {
   ERR_006 = "ERR_006: Something broke!",
   ERR_007 = "ERR_007: Duplicate Username",
   ERR_008 = "ERR_008: Invalid JSON",
+  ERR_009 = "ERR_009: Invalid Credentials",
 }
 
 export enum SuccessCodes {

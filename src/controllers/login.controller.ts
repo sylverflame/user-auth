@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorCodes, Status } from "../models/types";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
+import { userManagerMap, usernameIDMap } from "./user.controller";
 
 export const authenticateUser = (
   req: Request,
@@ -9,10 +10,14 @@ export const authenticateUser = (
 ) => {
   try {
     const { username, password } = req.body;
-    const isCredentialsValid = true;
 
-    if (!isCredentialsValid) {
-      res.status(Status.Unauthorized).end();
+    const userId = usernameIDMap.getUserId(username);
+    const savedPassword = userId
+      ? userManagerMap.getUserPassword(userId)
+      : null;
+
+    if (!savedPassword || savedPassword !== password) {
+      res.status(Status.Unauthorized).json({ error: ErrorCodes.ERR_009 });
       return;
     }
 
@@ -53,7 +58,7 @@ export const validateToken = (
       return;
     }
 
-    const userData = jwt.verify(token, secretKey);
+    const userData = jwt.verify(token, secretKey); //User data extracted from token
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {

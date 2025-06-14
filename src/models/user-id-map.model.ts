@@ -12,6 +12,10 @@ export class UsernameIDMap {
     this.usernameIDMap.set(username, uuid);
   }
 
+  getUserId(username: string): string | undefined {
+    return this.usernameIDMap.get(username);
+  }
+
   removeUser(username: string): void {
     this.usernameIDMap.delete(username);
   }

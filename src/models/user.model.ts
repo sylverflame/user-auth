@@ -46,6 +46,10 @@ export class User {
     return this.role;
   }
 
+  getPassword(): string {
+    return this.password;
+  }
+
   toString(): string {
     return "ID: " + this.id + " Name: " + this.firstName + " " + this.lastName;
   }

@@ -22,6 +22,10 @@ export class UserManagerMap {
     return user.getUserData();
   }
 
+  getUserPassword(id: string): string | undefined {
+    return this.users.get(id)?.getPassword();
+  }
+
   getAllUsers(): UserResponse[] {
     return [...this.users.values()].map((user) => user.getUserData());
   }
