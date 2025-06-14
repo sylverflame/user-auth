@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorCodes, Status } from "../models/types";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { userManagerMap, usernameIDMap } from "./user.controller";
 import { logger } from "../winston";
 
@@ -65,11 +65,16 @@ export const validateToken = (
     const userData = jwt.verify(token, secretKey); //User data extracted from token - This also throws an error if there is as issue in the token
     next();
   } catch (error: any) {
-    if (error instanceof TokenExpiredError) {
+    if (
+      error instanceof TokenExpiredError ||
+      error instanceof JsonWebTokenError
+    ) {
       res.status(Status.Forbidden).json({ error: error.message });
       return;
     }
-    loginLogger.error(`validateToken failed - ${error.message}`);
+    loginLogger.error(`validateToken failed - ${error.message}`, {
+      stack: error.stack,
+    }); // Can include stack in the log if required
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };

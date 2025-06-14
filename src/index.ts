@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 import { logger } from "./winston";
 
 dotenv.config();
-
+logger.info("Server Started");
 const app = express();
 const PORT = process.env.PORT;
 
