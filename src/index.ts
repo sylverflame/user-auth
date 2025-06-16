@@ -21,16 +21,13 @@ app.use(helmet());
 const verifyToken = () => {};
 
 // Routes
-app.get("/", (req: Request, res: Response) => {
-  res.status(Status.Success).end();
-});
 app.use("/api/user/", userRouter);
 app.use("/api/auth/", authRouter);
 
 // For invalid routes
 app.use((req: Request, res: Response) => {
   logger.error(`Main Logger - ${req.method} failed for ${req.url}`);
-  res.status(Status.NotFound).json({ error: ErrorCodes.ERR_005 });
+  res.status(Status.NotFound).end();
 });
 app.use((req: Request, res: Response) => {
   logger.error(`Main logger - Internal Server Error`);
