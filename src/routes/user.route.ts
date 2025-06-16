@@ -5,13 +5,33 @@ import {
   getAllUsers,
   getUser,
 } from "../controllers/user.controller";
-import { validateToken } from "../controllers/login.controller";
+import { authorizeRoles, validateToken } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/", validateToken, getAllUsers);
-router.get("/:id", validateToken, getUser);
-router.post("/", createUser);
-router.delete("/:id", validateToken, deleteUser);
+router.get(
+  "/",
+  validateToken,
+  authorizeRoles(["User", "Employee", "Admin", "SuperAdmin"]),
+  getAllUsers
+);
+router.get(
+  "/:id",
+  validateToken,
+  authorizeRoles(["Admin", "SuperAdmin"]),
+  getUser
+);
+router.post(
+  "/",
+  validateToken,
+  authorizeRoles(["Admin", "SuperAdmin"]),
+  createUser
+);
+router.delete(
+  "/:id",
+  validateToken,
+  authorizeRoles(["SuperAdmin"]),
+  deleteUser
+);
 
 export default router;

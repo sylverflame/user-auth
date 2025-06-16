@@ -1,5 +1,5 @@
 import { UserResponse } from "../schemas/user.schema";
-import { Role } from "./types";
+import { HeirarchyLevels, Role } from "./types";
 
 export class User {
   private id: string;
@@ -8,21 +8,32 @@ export class User {
   private role: Role;
   private username: string;
   private password: string;
+  private heirarchy: number;
 
   constructor(
-    id: string,
     firstName: string,
     lastName: string,
     role: Role,
     username: string,
     password: string
   ) {
-    this.id = id;
+    this.id = crypto.randomUUID();
     this.firstName = firstName;
     this.lastName = lastName;
     this.role = role;
     this.username = username;
     this.password = password;
+    this.heirarchy = HeirarchyLevels.User;
+  }
+
+  // Used when a new user is registerng themselves. TypeScript does not multiple constructors like Java, hence this approach
+  public static registerUser(
+    firstName: string,
+    lastName: string,
+    username: string,
+    password: string
+  ): User {
+    return new User(firstName, lastName, "User", username, password);
   }
 
   getId(): string {
@@ -46,12 +57,20 @@ export class User {
     return this.role;
   }
 
+  setRole(role: Role): void {
+    this.role = role;
+  }
+
   getUsername(): string {
     return this.username;
   }
 
   getPassword(): string {
     return this.password;
+  }
+
+  getHeirarchy(): number {
+    return this.heirarchy;
   }
 
   toString(): string {

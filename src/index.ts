@@ -3,7 +3,7 @@ import cors from "cors";
 import userRouter from "./routes/user.route";
 import helmet from "helmet";
 import { ErrorCodes, Status } from "./models/types";
-import loginRouter from "./routes/login.route";
+import authRouter from "./routes/auth.route";
 import dotenv from "dotenv";
 import { logger } from "./winston";
 
@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
   res.status(Status.Success).end();
 });
 app.use("/api/user/", userRouter);
-app.use("/api/login/", loginRouter);
+app.use("/api/auth/", authRouter);
 
 // For invalid routes
 app.use((req: Request, res: Response) => {

@@ -1,20 +1,25 @@
 import { ROLES } from "../configs/constants";
 import { UserResponse } from "../schemas/user.schema";
+import { Role } from "./types";
 import { User } from "./user.model";
 
 export class UserManagerMap {
   private users: Map<string, User>;
   private usernameIdMap: Map<string, string>;
+  private hasSuperAdmin: boolean;
   //  TODO: Introduce hasSuperAdmin and levels
 
   constructor() {
     this.users = new Map();
     this.usernameIdMap = new Map();
+    this.hasSuperAdmin = false;
   }
 
   addUser(user: User): void {
     const id = user.getId();
     const username = user.getUsername();
+    // First user registered will get the SuperAdmin Role
+    if (this.users.size === 0) user.setRole(ROLES.SuperAdmin);
     this.users.set(id, user);
     this.usernameIdMap.set(username, id);
   }
@@ -39,15 +44,9 @@ export class UserManagerMap {
     return [...this.users.values()].map((user) => user.getUserData());
   }
 
-  getAdmins(): UserResponse[] {
+  getUsersByRole(role: Role): UserResponse[] {
     return [...this.users.values()]
-      .filter((user) => user.getRole() === ROLES.Admin)
-      .map((user) => user.getUserData());
-  }
-
-  getEmployees(): UserResponse[] {
-    return [...this.users.values()]
-      .filter((user) => user.getRole() === ROLES.Employee)
+      .filter((user) => user.getRole() === role)
       .map((user) => user.getUserData());
   }
 
@@ -67,5 +66,13 @@ export class UserManagerMap {
 
   getSize(): number {
     return this.users.size;
+  }
+
+  getHasSuperAdmin(): boolean {
+    return this.hasSuperAdmin;
+  }
+
+  setHasSuperAdmin(status: boolean): void {
+    this.hasSuperAdmin = status;
   }
 }

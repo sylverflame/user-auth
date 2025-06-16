@@ -1,17 +1,16 @@
-import { ROLES } from "../configs/constants";
-import { User } from "../models/user.model";
-import { UserManagerMap } from "../models/user-manager-map.model";
-import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
-import { UserSchema } from "../schemas/user.schema";
-import { ZodError } from "zod/v4";
 import { Request, Response } from "express";
+import { ZodError } from "zod/v4";
+import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
+import { UserManagerMap } from "../models/user-manager-map.model";
+import { User } from "../models/user.model";
+import { CreateUserSchema, RegisterUserSchema } from "../schemas/user.schema";
 import { logger } from "../winston";
 
 export const userManagerMap = new UserManagerMap();
 const userLogger = logger.child({ label: "UserController" });
 
 // -- Create
-export const createUser = (req: Request, res: Response) => {
+export const registerUser = (req: Request, res: Response) => {
   try {
     // Check for no payload
     if (!req.body) {
@@ -19,8 +18,46 @@ export const createUser = (req: Request, res: Response) => {
       return;
     }
 
+    const parsedBody = RegisterUserSchema.parse(req.body);
+    const { username, password, firstName, lastName } = parsedBody;
+
+    // Check for duplicate username
+    if (userManagerMap.getAllUsernames().includes(username)) {
+      res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_007 });
+      return;
+    }
+
+    const user = User.registerUser(firstName, lastName, username, password);
+    userManagerMap.addUser(user);
+
+    res.status(Status.Created).json({
+      message: SuccessCodes.SUCCESS_001,
+      id: user.getId(),
+      firstName,
+      lastName,
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const issues = error.issues.map(
+        (issue) => issue.path + " " + issue.message
+      );
+      res.status(Status.BadRequest).json({ error: issues });
+      return;
+    }
+  }
+};
+export const createUser = (req: Request, res: Response) => {
+  try {
+    // Check for no payload
+    if (!req.body) {
+      res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_001 });
+      return;
+
+      // Parse the data
+    }
+
     // Parse user data
-    const userBody = UserSchema.parse(req.body); // Zod throws an error, if any
+    const userBody = CreateUserSchema.parse(req.body); // Zod throws an error, if any
     const { firstName, lastName, role, username, password } = userBody;
 
     // Check for duplicate username
@@ -29,16 +66,16 @@ export const createUser = (req: Request, res: Response) => {
       return;
     }
 
-    // Generate ID
-    const id = crypto.randomUUID() as string;
-
     // Create user
-    const user = new User(id, firstName, lastName, role, username, password);
+    const user = new User(firstName, lastName, role, username, password);
     userManagerMap.addUser(user);
 
-    res
-      .status(Status.Created)
-      .json({ message: SuccessCodes.SUCCESS_001, id, firstName, lastName });
+    res.status(Status.Created).json({
+      message: SuccessCodes.SUCCESS_001,
+      id: user.getId(),
+      firstName,
+      lastName,
+    });
   } catch (e: any) {
     if (e instanceof ZodError) {
       const issues = e.issues.map((issue) => issue.path + " " + issue.message);
@@ -76,21 +113,14 @@ export const getUser = (req: Request, res: Response) => {
 export const getAllUsers = (req: Request, res: Response) => {
   try {
     const { role } = req.query;
+
     let users;
-    switch (role) {
-      case ROLES.Admin:
-        users = userManagerMap.getAdmins();
-        res.status(Status.Success).json({ message: "Admin List", users });
-        break;
-      case ROLES.Employee:
-        users = userManagerMap.getEmployees();
-        res.status(Status.Success).json({ message: "Employee List", users });
-        break;
-      default:
-        users = userManagerMap.getAllUsers();
-        res.status(Status.Success).json({ message: "All Users", users });
-        break;
+    if (!role) {
+      users = userManagerMap.getAllUsers();
+    } else {
+      users = userManagerMap.getUsersByRole(role as Role);
     }
+    res.status(Status.Success).json({ users });
   } catch (e: any) {
     userLogger.error(`getAllUsers failed - ${e.message}`, {
       stack: e.stack,
@@ -104,13 +134,15 @@ export const getAllUsers = (req: Request, res: Response) => {
 // -- Delete
 export const deleteUser = (req: Request, res: Response) => {
   try {
-    const loggedInUserRole = (req as any).user.role;
+    const { id } = req.params;
+    const userRole = userManagerMap.getUserById(id)?.getRole();
 
-    if (!loggedInUserRole || loggedInUserRole !== "Admin") {
-      res.status(Status.Forbidden).end();
+    if ((req as any).user.role === userRole) {
+      res.status(Status.Forbidden).json({ error: ErrorCodes.ERR_011 });
       return;
     }
-    const { id } = req.params;
+
+    // Remove user
     const isRemoved = userManagerMap.removeUser(id);
 
     if (!isRemoved) {
