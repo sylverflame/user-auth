@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorCodes, Status } from "../models/types";
-import { logger } from "../winston";
+import { logger } from "../../winston";
 
 const loginLogger = logger.child({ label: "LoginController" });
 

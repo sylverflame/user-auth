@@ -1,9 +1,9 @@
 import express, { json, NextFunction, Request, Response } from "express";
 import cors from "cors";
-import userRouter from "./routes/user.route";
+import userRouter from "./v1/routes/user.route";
 import helmet from "helmet";
-import { ErrorCodes, Status } from "./models/types";
-import authRouter from "./routes/auth.route";
+import { ErrorCodes, Status } from "./v1/models/types";
+import authRouter from "./v1/routes/auth.route";
 import dotenv from "dotenv";
 import { logger } from "./winston";
 
@@ -17,12 +17,9 @@ app.use(cors());
 app.use(json());
 app.use(helmet());
 
-// Functions
-const verifyToken = () => {};
-
 // Routes
-app.use("/api/user/", userRouter);
-app.use("/api/auth/", authRouter);
+app.use("/api/v1/user/", userRouter);
+app.use("/api/v1/auth/", authRouter);
 
 // For invalid routes
 app.use((req: Request, res: Response) => {

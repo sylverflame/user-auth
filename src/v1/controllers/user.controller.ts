@@ -4,7 +4,7 @@ import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 import { UserManagerMap } from "../models/user-manager-map.model";
 import { User } from "../models/user.model";
 import { CreateUserSchema, RegisterUserSchema } from "../schemas/user.schema";
-import { logger } from "../winston";
+import { logger } from "../../winston";
 
 export const userManagerMap = new UserManagerMap();
 const userLogger = logger.child({ label: "UserController" });

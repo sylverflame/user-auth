@@ -4,7 +4,7 @@ import { ZodError } from "zod/v4";
 import { userManagerMap } from "../controllers/user.controller";
 import { ErrorCodes, Role, Status } from "../models/types";
 import { AuthenticateUserSchema, TokenUserData } from "../schemas/user.schema";
-import { logger } from "../winston";
+import { logger } from "../../winston";
 import { User } from "../models/user.model";
 
 const loginLogger = logger.child({ label: "LoginController" });
