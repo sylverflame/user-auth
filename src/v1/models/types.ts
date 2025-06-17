@@ -23,7 +23,7 @@ export enum ErrorCodes {
   ERR_004 = "ERR_004: No user found",
   ERR_005 = "ERR_005: Sorry can't find that!",
   ERR_006 = "ERR_006: Something went wrong!",
-  ERR_007 = "ERR_007: Duplicate Username",
+  ERR_007 = "ERR_007: Username already taken!",
   ERR_008 = "ERR_008: Invalid JSON",
   ERR_009 = "ERR_009: Invalid Credentials",
   ERR_010 = "ERR_010: JWT Secret key not set",
