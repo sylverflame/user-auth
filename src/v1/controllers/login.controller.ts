@@ -6,8 +6,10 @@ const loginLogger = logger.child({ label: "LoginController" });
 
 export const loginUser = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const jwt = (req as any).token;
-    res.status(Status.Success).json({ message: "Login Successful", jwt });
+    const userData = (req as any).user;
+    res
+      .status(Status.Success)
+      .json({ message: "Login Successful", user: userData });
     return;
   } catch (error: any) {
     loginLogger.error(`loginUser failed - ${error.message}`, {

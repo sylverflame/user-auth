@@ -38,13 +38,14 @@ export const authenticateUser = (
       return;
     }
 
-    const userRole = userManagerMap.getUserById(userId)?.getRole();
+    const role = userManagerMap.getUserById(userId)?.getRole();
+    const isAdmin = role === "SuperAdmin" || role === "Admin";
 
-    const token = jwt.sign({ username: username, role: userRole }, secretKey, {
+    const token = jwt.sign({ username, role }, secretKey, {
       expiresIn: "1h",
     });
     // Typecast it to any to append token to request
-    (req as any).token = token;
+    (req as any).user = { username, role, isAdmin, token };
 
     next();
   } catch (error: any) {
