@@ -9,6 +9,7 @@ export class User {
   private username: string;
   private password: string;
   private heirarchy: number;
+  private createdAt: Date;
 
   constructor(
     firstName: string,
@@ -17,13 +18,19 @@ export class User {
     username: string,
     password: string
   ) {
-    this.id = crypto.randomUUID();
+    this.id =
+      firstName.toLowerCase() +
+      "-" +
+      lastName.toLowerCase() +
+      "-" +
+      crypto.randomUUID();
     this.firstName = firstName;
     this.lastName = lastName;
     this.role = role;
     this.username = username;
     this.password = password;
     this.heirarchy = HeirarchyLevels.User;
+    this.createdAt = new Date();
   }
 
   // Used when a new user is registerng themselves. TypeScript does not multiple constructors like Java, hence this approach

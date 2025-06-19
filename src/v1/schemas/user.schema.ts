@@ -9,6 +9,10 @@ export const CreateUserSchema = z.object({
   role: z.literal(Object.values(ROLES)),
 });
 
+export const GetUsersQueryParamsSchema = z
+  .literal(Object.values(ROLES))
+  .optional();
+
 export const RegisterUserSchema = z.object({
   username: z.string().min(5).max(15),
   password: z.string().min(5).max(15),
@@ -17,7 +21,7 @@ export const RegisterUserSchema = z.object({
 });
 
 export const UserResponseSchema = z.object({
-  id: z.uuidv4(),
+  id: z.string(),
   firstName: z.string().min(5).max(10),
   lastName: z.string().min(5).max(10),
   role: z.literal(Object.values(ROLES)),

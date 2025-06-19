@@ -3,7 +3,11 @@ import { ZodError } from "zod/v4";
 import { ErrorCodes, Role, Status, SuccessCodes } from "../models/types";
 import { UserManagerMap } from "../models/user-manager-map.model";
 import { User } from "../models/user.model";
-import { CreateUserSchema, RegisterUserSchema } from "../schemas/user.schema";
+import {
+  CreateUserSchema,
+  GetUsersQueryParamsSchema,
+  RegisterUserSchema,
+} from "../schemas/user.schema";
 import { logger } from "../../winston";
 
 export const userManagerMap = new UserManagerMap();
@@ -113,7 +117,7 @@ export const getUser = (req: Request, res: Response) => {
 export const getAllUsers = (req: Request, res: Response) => {
   try {
     const { role } = req.query;
-
+    GetUsersQueryParamsSchema.parse(role);
     let users;
     if (!role) {
       users = userManagerMap.getAllUsers();
@@ -125,6 +129,10 @@ export const getAllUsers = (req: Request, res: Response) => {
     userLogger.error(`getAllUsers failed - ${e.message}`, {
       stack: e.stack,
     });
+    if (e instanceof ZodError) {
+      res.status(Status.BadRequest).end();
+      return;
+    }
     res.status(Status.InternalServerError).json({ error: ErrorCodes.ERR_006 });
   }
 };
