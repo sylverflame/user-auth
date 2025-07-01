@@ -56,8 +56,6 @@ export const createUser = (req: Request, res: Response) => {
     if (!req.body) {
       res.status(Status.BadRequest).json({ error: ErrorCodes.ERR_001 });
       return;
-
-      // Parse the data
     }
 
     // Parse user data

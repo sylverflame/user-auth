@@ -6,6 +6,7 @@ import { ErrorCodes, Status } from "./v1/models/types";
 import authRouter from "./v1/routes/auth.route";
 import dotenv from "dotenv";
 import { logger } from "./winston";
+import { validateToken } from "./v1/middlewares/auth.middleware";
 
 dotenv.config();
 logger.info("Server Started");
@@ -26,7 +27,8 @@ app.use(json());
 app.use(helmet());
 
 // Routes
-app.use("/api/v1/user/", userRouter);
+
+app.use("/api/v1/user/", validateToken, userRouter);
 app.use("/api/v1/auth/", authRouter);
 
 // For invalid routes
